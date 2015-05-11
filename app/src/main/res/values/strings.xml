@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">CreditCheetah</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="mainactivity_creditcardhint">Credit Card Number</string>
+    <string name="mainActivity_ccexp_month">MM</string>
+    <string name="mainActivity_ccexpyear">YY</string>
+
+
 </resources>
