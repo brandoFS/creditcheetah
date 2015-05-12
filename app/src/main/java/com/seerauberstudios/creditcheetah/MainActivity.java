@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.seerauberstudios.creditcheetah.model.Ready;
+import com.seerauberstudios.creditcheetah.util.DateUtil;
+import com.seerauberstudios.creditcheetah.util.LuhnUtil;
 import com.seerauberstudios.creditcheetah.util.RegexUtil;
 
 import java.util.Calendar;
@@ -28,6 +30,9 @@ public class MainActivity extends Activity {
     private EditText ccNum, ccMonth, ccYear, ccCVV;
     private Button submitBtn;
     private ImageView ccLogo, cvvLogo;
+    private String ccNumString;
+
+    private int month, year = 0;
 
 
     @Override
@@ -48,12 +53,19 @@ public class MainActivity extends Activity {
 
 
     private void validateSubmit(){
+        int currentYear = Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) % 100; //Get current year divide by 100 to get last 2 digits
+        int currentMonth = Calendar.getInstance(Locale.getDefault()).get(Calendar.MONTH);
+        if(year == currentYear && month < currentMonth){
+            ccMonth.setError("Expired Date");
+            return;
+        }
+
         if(ready.equals(allReady))submitBtn.setEnabled(true);
         else submitBtn.setEnabled(false);
 
     }
 
-    private void showError(String error){
+    private void showMessage(String error){
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
@@ -80,12 +92,17 @@ public class MainActivity extends Activity {
                     validateSubmit();
                 } else if (s.length() == 7) { //get first 6 for IIN
                     setCardBrand(s.toString()); //check/set card brand
+                } else if (s.length() >= 15) {
                     ready.add(Ready.CCNUM);
                     validateSubmit();
+                    ccNumString = s.toString();
                 }
-
-
+                else{
+                    ready.remove(Ready.CCNUM);
+                    validateSubmit();
+                }
             }
+
         });
         ((EditText)findViewById(R.id.mainactivity_card_expiration_month)).addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,10 +118,9 @@ public class MainActivity extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 1) {
-                    int month = Integer.parseInt(s.toString());
+                    month = Integer.parseInt(s.toString());
                     if (month > 0 && month < 13) {
                         ready.add(Ready.MONTH);
-                        //do date stuff
                         validateSubmit();
                     } else {
                         ready.remove(Ready.MONTH);
@@ -130,7 +146,7 @@ public class MainActivity extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 1) {
-                    int year = Integer.parseInt(s.toString());
+                    year = Integer.parseInt(s.toString());
                     int currentYear = Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) % 100; //Get current year divide by 100 to get last 2 digits
                     if (year >= currentYear && year <= currentYear + 50) {
                         ready.add(Ready.YEAR);
@@ -138,7 +154,7 @@ public class MainActivity extends Activity {
                         validateSubmit();
                     } else {
                         ccYear.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                        ccYear.setError("Expired Year");
+                        ccYear.setError("Expired Date");
                         ready.remove(Ready.YEAR);
                         validateSubmit();
                     }
@@ -174,12 +190,18 @@ public class MainActivity extends Activity {
         ((Button)findViewById(R.id.mainMenu_submitButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(LuhnUtil.isLuhnValid(ccNumString)){
+                    showMessage("Success!");
+                }
+                else{
+                    showMessage("Invalid Card!");
+                }
 
             }
         });
 
 
-        }
+    }
 
     private void setCardBrand(String iin){ //Check card's using pattern matching then change card logo
         Boolean amex = false;

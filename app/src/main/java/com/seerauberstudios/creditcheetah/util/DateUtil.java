@@ -3,11 +3,12 @@ package com.seerauberstudios.creditcheetah.util;
 /**
  * Created by brando on 5/11/15.
  */
-public class ExpirationUtil {
+public class DateUtil {
 
 
-    public void ValidateDate(int month, int year){
+    public static boolean isExpired(int month, int year){
 
+        return true;
 
     }
 
