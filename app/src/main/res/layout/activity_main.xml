@@ -23,7 +23,7 @@
         android:maxLength="16" />
 
         <ImageView
-            android:id="@+id/mainactivity_cardicon"
+            android:id="@+id/mainactivity_card_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/genericcard"
@@ -90,6 +90,7 @@
             />
 
         <ImageView
+            android:id="@+id/mainactivity_cardcvv_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/cvv"
