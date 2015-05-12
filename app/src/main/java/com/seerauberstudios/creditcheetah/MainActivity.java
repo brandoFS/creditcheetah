@@ -11,13 +11,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.seerauberstudios.creditcheetah.model.Ready;
 import com.seerauberstudios.creditcheetah.util.RegexUtil;
 
 import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.Locale;
 
 
 public class MainActivity extends Activity {
+
+    private EnumSet<Ready> ready = EnumSet.noneOf(Ready.class); //enums to dertermine when button is enabled
+    private EnumSet<Ready> allReady = EnumSet.allOf(Ready.class);
 
     private EditText ccNum, ccMonth, ccYear, ccCVV;
     private Button submitBtn;
@@ -42,13 +48,13 @@ public class MainActivity extends Activity {
 
 
     private void validateSubmit(){
-        submitBtn.setEnabled(true);
+        if(ready.equals(allReady))submitBtn.setEnabled(true);
+        else submitBtn.setEnabled(false);
 
     }
 
     private void showError(String error){
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-
     }
 
 
@@ -70,8 +76,12 @@ public class MainActivity extends Activity {
                 if (s.length() < 6) { //change back to blank if they delete
                     ccLogo.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.mipmap.genericcard, null));
                     cvvLogo.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.mipmap.cvv, null));
+                    ready.remove(Ready.CCNUM);
+                    validateSubmit();
                 } else if (s.length() == 7) { //get first 6 for IIN
                     setCardBrand(s.toString()); //check/set card brand
+                    ready.add(Ready.CCNUM);
+                    validateSubmit();
                 }
 
 
@@ -85,7 +95,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                ccMonth.setTextColor(getResources().getColor(android.R.color.black));
             }
 
             @Override
@@ -93,10 +103,14 @@ public class MainActivity extends Activity {
                 if (s.length() > 1) {
                     int month = Integer.parseInt(s.toString());
                     if (month > 0 && month < 13) {
+                        ready.add(Ready.MONTH);
                         //do date stuff
+                        validateSubmit();
                     } else {
+                        ready.remove(Ready.MONTH);
+                        validateSubmit();
                         ccMonth.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                        showError("Out of Range");
+                        ccMonth.setError("Invalid date (M/M)");
                     }
 
                 }
@@ -110,7 +124,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                ccYear.setTextColor(getResources().getColor(android.R.color.black));
             }
 
             @Override
@@ -119,13 +133,40 @@ public class MainActivity extends Activity {
                     int year = Integer.parseInt(s.toString());
                     int currentYear = Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) % 100; //Get current year divide by 100 to get last 2 digits
                     if (year >= currentYear && year <= currentYear + 50) {
+                        ready.add(Ready.YEAR);
                         //do date stuff
+                        validateSubmit();
                     } else {
                         ccYear.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                        showError("Out of Range");
+                        ccYear.setError("Expired Year");
+                        ready.remove(Ready.YEAR);
+                        validateSubmit();
                     }
 
                 }
+            }
+        });
+
+        ((EditText)findViewById(R.id.mainactivity_cardcvv)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                ready.remove(Ready.CVV);
+                validateSubmit();
+                if (s.length() > 2) {
+                    ready.add(Ready.CVV);
+                    validateSubmit();
+                }
+
             }
         });
 
@@ -133,7 +174,7 @@ public class MainActivity extends Activity {
         ((Button)findViewById(R.id.mainMenu_submitButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
             }
         });
 
@@ -166,10 +207,12 @@ public class MainActivity extends Activity {
         if(amex){
             ccNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
             cvvLogo.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.mipmap.amexcvv, null));
+            ccCVV.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         }
         else{
             ccNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(16)});
             cvvLogo.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.mipmap.cvv, null));
+            ccCVV.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         }
 
 

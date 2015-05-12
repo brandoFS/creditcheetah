@@ -110,6 +110,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit"
+        android:textColor="@android:color/white"
+        android:background="@drawable/buttonbkgrd"
         android:id="@+id/mainMenu_submitButton"
         android:layout_gravity="center_horizontal"
         android:enabled="false"/>
