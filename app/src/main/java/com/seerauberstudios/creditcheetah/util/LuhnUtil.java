@@ -10,7 +10,7 @@ public class LuhnUtil {
 
         if(input.length() >= 10){
             int sum = 0;
-            for(int i = 0; i < input.length(); i++){
+            for(int i = input.length()-1; i >= 0; i--){
                 int num = Character.getNumericValue(input.charAt(i));
                 if(i % 2 != 0){
                     num = num * 1;

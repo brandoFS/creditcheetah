@@ -5,6 +5,9 @@
     <string name="mainactivity_creditcardhint">Credit Card Number</string>
     <string name="mainActivity_ccexp_month">MM</string>
     <string name="mainActivity_ccexpyear">YY</string>
+    <string name="title_activity_splash">SplashActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 
 
