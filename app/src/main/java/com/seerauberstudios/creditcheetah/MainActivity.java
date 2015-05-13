@@ -55,12 +55,13 @@ public class MainActivity extends Activity {
     private void validateSubmit(){
         int currentYear = Calendar.getInstance(Locale.getDefault()).get(Calendar.YEAR) % 100; //Get current year divide by 100 to get last 2 digits
         int currentMonth = Calendar.getInstance(Locale.getDefault()).get(Calendar.MONTH);
-        if(year == currentYear && month < currentMonth){
+        if(year == currentYear && month <= currentMonth+1){
             ccMonth.setError("Expired Date");
             return;
         }
 
-        if(ready.equals(allReady))submitBtn.setEnabled(true);
+        if(ready.equals(allReady))
+            submitBtn.setEnabled(true);
         else submitBtn.setEnabled(false);
 
     }
@@ -95,7 +96,7 @@ public class MainActivity extends Activity {
                 } else if (s.length() >= 15) {
                     ready.add(Ready.CCNUM);
                     validateSubmit();
-                    ccNumString = s.toString();
+                    ccNumString = s.toString().trim();
                 }
                 else{
                     ready.remove(Ready.CCNUM);

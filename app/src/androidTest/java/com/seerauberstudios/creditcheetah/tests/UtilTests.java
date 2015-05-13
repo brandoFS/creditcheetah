@@ -19,7 +19,7 @@ public class UtilTests extends TestCase {
 
     public void testLuhnAlogrithmn(){ //test Luhn algorithmn to validate credit card numbers
 
-       // assertEquals(true, LuhnUtil.isLuhnValid(AMEX_TEST));
+        assertEquals(true, LuhnUtil.isLuhnValid(AMEX_TEST));
         assertEquals(true, LuhnUtil.isLuhnValid(DISCOVER_TEST));
         assertEquals(true, LuhnUtil.isLuhnValid(JCB_TEST));
         assertEquals(true, LuhnUtil.isLuhnValid(MC_TEST));

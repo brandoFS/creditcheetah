@@ -20,6 +20,7 @@
         android:inputType="numberPassword"
         android:singleLine="true"
         android:layout_weight=".75"
+        android:nextFocusDown="@+id/mainactivity_card_expiration_month"
         android:hint="@string/mainactivity_creditcardhint"
         android:maxLength="16" />
 
@@ -50,6 +51,7 @@
 
         <EditText
             android:id="@+id/mainactivity_card_expiration_month"
+            android:nextFocusDown="@+id/mainactivity_card_expiration_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -67,6 +69,7 @@
 
         <EditText
             android:id="@+id/mainactivity_card_expiration_year"
+            android:nextFocusDown="@+id/mainactivity_cardcvv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number"
